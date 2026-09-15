@@ -4,32 +4,73 @@
 
 body {
     margin: 0;
-    background: #f4f6f5;
-    color: #26312d;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f7f5;
+    color: #26332b;
 }
 
 .app {
-    width: 100%;
-    max-width: 650px;
+    max-width: 680px;
     margin: 0 auto;
-    padding: 30px 18px 50px;
+    padding: 20px;
 }
 
+
+/* HEADER */
+
 .header {
-    margin-bottom: 25px;
+    padding: 25px 5px 20px;
 }
 
 .header h1 {
     margin: 0;
-    font-size: 30px;
-    font-weight: 700;
+    font-size: 32px;
+    letter-spacing: -0.5px;
 }
 
 .header p {
-    margin: 6px 0 0;
-    color: #718078;
-    font-size: 16px;
+    margin: 5px 0 0;
+    color: #708077;
+}
+
+
+/* NAVIGACE */
+
+.navigation {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: white;
+    padding: 5px;
+    border-radius: 14px;
+}
+
+.nav-button {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 11px;
+    border-radius: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    color: #6d7971;
+}
+
+.nav-button.active {
+    background: #e7f0e9;
+    color: #31583d;
+    font-weight: 600;
+}
+
+
+/* STRÁNKY */
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
 }
 
 
@@ -38,18 +79,42 @@ body {
 .card {
     background: white;
     border-radius: 18px;
-    padding: 20px;
+    padding: 22px;
     margin-bottom: 16px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 2px 10px rgba(30, 50, 35, 0.04);
 }
 
-.card h2 {
-    margin: 0 0 17px;
-    font-size: 18px;
+.card h2,
+.history-header h2 {
+    margin: 0 0 6px;
+    font-size: 20px;
+}
+
+.subtitle {
+    margin: 0 0 20px;
+    color: #7b8780;
+    font-size: 14px;
 }
 
 
-/* ČÍSELNÁ ŠKÁLA */
+/* POLE */
+
+.field {
+    margin-top: 24px;
+}
+
+.field:first-child {
+    margin-top: 0;
+}
+
+.field label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+
+/* SCALE */
 
 .scale {
     display: grid;
@@ -58,58 +123,58 @@ body {
 }
 
 .scale button {
-    border: 1px solid #dce2df;
-    background: #f8faf9;
-    color: #394640;
+    border: 1px solid #dbe3dd;
+    background: white;
     border-radius: 9px;
-    height: 42px;
-    font-size: 14px;
+    padding: 9px 2px;
     cursor: pointer;
-    transition: 0.15s;
+    font-size: 14px;
 }
 
 .scale button:hover {
-    background: #eef3f0;
+    background: #f1f6f2;
 }
 
 .scale button.selected {
-    background: #334d42;
+    background: #5c8767;
     color: white;
-    border-color: #334d42;
+    border-color: #5c8767;
+}
+
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 7px;
+    color: #929c96;
+    font-size: 12px;
 }
 
 
 /* CHECKBOXY */
 
-.options {
+.checkbox-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 9px;
 }
 
-.option {
-    position: relative;
-}
-
-.option input {
-    position: absolute;
-    opacity: 0;
-}
-
-.option span {
-    display: block;
-    padding: 13px 12px;
-    border: 1px solid #dce2df;
+.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    border: 1px solid #e0e6e1;
+    padding: 11px;
     border-radius: 11px;
-    background: #f8faf9;
     cursor: pointer;
-    transition: 0.15s;
+    font-size: 14px;
 }
 
-.option input:checked + span {
-    background: #e4eee9;
-    border-color: #6d897b;
-    font-weight: 600;
+.checkbox:hover {
+    background: #f8faf8;
+}
+
+.checkbox input {
+    accent-color: #5c8767;
 }
 
 
@@ -117,18 +182,18 @@ body {
 
 textarea {
     width: 100%;
+    min-height: 90px;
     resize: vertical;
-    border: 1px solid #dce2df;
+    border: 1px solid #dbe3dd;
     border-radius: 11px;
-    padding: 13px;
+    padding: 12px;
     font-family: inherit;
-    font-size: 15px;
-    color: #26312d;
+    font-size: 14px;
     outline: none;
 }
 
 textarea:focus {
-    border-color: #6d897b;
+    border-color: #6e9679;
 }
 
 
@@ -138,30 +203,30 @@ textarea:focus {
     width: 100%;
     border: none;
     border-radius: 14px;
-    padding: 17px;
-    background: #334d42;
+    background: #5c8767;
     color: white;
+    padding: 15px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
 }
 
 .save-button:hover {
-    background: #263d34;
+    background: #4e7659;
 }
 
 
-/* POTVRZENÍ */
+/* SUCCESS */
 
 .success-message {
     display: none;
-    margin-top: 15px;
-    padding: 14px;
-    background: #e4eee9;
-    color: #334d42;
-    border-radius: 12px;
     text-align: center;
-    font-weight: 600;
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 10px;
+    background: #e5f2e7;
+    color: #35613f;
+    font-size: 14px;
 }
 
 .success-message.show {
@@ -169,21 +234,166 @@ textarea:focus {
 }
 
 
+/* HISTORIE */
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.entry-count {
+    background: white;
+    padding: 8px 11px;
+    border-radius: 10px;
+    color: #6f7c73;
+    font-size: 12px;
+}
+
+
+/* ZÁZNAM */
+
+.history-card {
+    background: white;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 10px rgba(30, 50, 35, 0.04);
+}
+
+.history-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 18px;
+}
+
+.history-date {
+    font-weight: 700;
+    font-size: 17px;
+}
+
+.history-time {
+    color: #8b958f;
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.delete-button {
+    border: none;
+    background: transparent;
+    color: #a47a7a;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+
+/* ČÍSLA V HISTORII */
+
+.stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.stat {
+    background: #f5f8f5;
+    border-radius: 12px;
+    padding: 13px;
+}
+
+.stat-label {
+    color: #7d8981;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 23px;
+    font-weight: 700;
+}
+
+
+/* TAGY */
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.tag {
+    background: #edf3ee;
+    color: #4d6754;
+    padding: 6px 9px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+
+/* DETAILY */
+
+.history-detail {
+    margin-top: 15px;
+    padding-top: 14px;
+    border-top: 1px solid #edf0ed;
+}
+
+.history-detail strong {
+    display: block;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.history-detail p {
+    margin: 0 0 12px;
+    color: #68736c;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* PRÁZDNÁ HISTORIE */
+
+.empty-history {
+    text-align: center;
+    background: white;
+    border-radius: 18px;
+    padding: 45px 25px;
+}
+
+.empty-history h3 {
+    margin: 0 0 8px;
+}
+
+.empty-history p {
+    margin: 0;
+    color: #7c8780;
+    font-size: 14px;
+}
+
+
 /* MOBIL */
 
-@media (max-width: 480px) {
+@media (max-width: 500px) {
 
     .app {
-        padding: 22px 14px 40px;
+        padding: 14px;
     }
 
     .header h1 {
-        font-size: 27px;
+        font-size: 28px;
     }
 
     .card {
-        padding: 17px;
-        border-radius: 15px;
+        padding: 18px;
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr;
     }
 
     .scale {
@@ -191,11 +401,7 @@ textarea:focus {
     }
 
     .scale button {
-        height: 38px;
+        padding: 8px 1px;
         font-size: 13px;
-    }
-
-    .options {
-        grid-template-columns: 1fr 1fr;
     }
 }
