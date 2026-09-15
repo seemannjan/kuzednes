@@ -1,95 +1,114 @@
-// -------------------------------------
-// VÝBĚR ČÍSELNÉ ŠKÁLY
-// -------------------------------------
+const STORAGE_KEY = "eczemaEntries";
 
-function setupScale(scaleId, inputId) {
+let selectedSeverity = null;
+let selectedItch = null;
 
-    const scale = document.getElementById(scaleId);
-    const hiddenInput = document.getElementById(inputId);
 
-    const buttons = scale.querySelectorAll("button");
+/* =========================
+   STUPNICE 1–10
+========================= */
+
+function setupScale(scaleId, callback) {
+    const buttons = document.querySelectorAll(`#${scaleId} button`);
 
     buttons.forEach(button => {
-
         button.addEventListener("click", () => {
 
-            // odstraníme označení ze všech tlačítek
             buttons.forEach(btn => {
                 btn.classList.remove("selected");
             });
 
-            // označíme vybrané tlačítko
             button.classList.add("selected");
 
-            // uložíme hodnotu
-            hiddenInput.value = button.dataset.value;
+            callback(Number(button.dataset.value));
         });
-
     });
 }
 
 
-setupScale("eczemaScale", "eczemaIntensity");
-setupScale("itchScale", "itchIntensity");
+setupScale("severityScale", value => {
+    selectedSeverity = value;
+});
+
+setupScale("itchScale", value => {
+    selectedItch = value;
+});
 
 
-// -------------------------------------
-// ODESLÁNÍ FORMULÁŘE
-// -------------------------------------
+/* =========================
+   NAVIGACE
+========================= */
 
-const form = document.getElementById("eczemaForm");
-const successMessage = document.getElementById("successMessage");
+const navButtons = document.querySelectorAll(".nav-button");
+const pages = document.querySelectorAll(".page");
 
-form.addEventListener("submit", function(event) {
+navButtons.forEach(button => {
 
-    event.preventDefault();
+    button.addEventListener("click", () => {
+
+        const pageId = button.dataset.page;
+
+        navButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        pages.forEach(page => {
+            page.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        document.getElementById(pageId).classList.add("active");
+
+        if (pageId === "history") {
+            renderHistory();
+        }
+    });
+});
 
 
-    // získání hodnot
-    const eczemaIntensity =
-        document.getElementById("eczemaIntensity").value;
+/* =========================
+   ULOŽENÍ ZÁZNAMU
+========================= */
 
-    const itchIntensity =
-        document.getElementById("itchIntensity").value;
+document.getElementById("saveButton").addEventListener("click", () => {
 
-
-    // kontrola základních údajů
-    if (!eczemaIntensity || !itchIntensity) {
-
-        alert("Vyber prosím intenzitu ekzému i svědění.");
-
+    if (!selectedSeverity || !selectedItch) {
+        alert("Vyber prosím intenzitu ekzému a svědění.");
         return;
     }
 
 
-    // místa
     const locations = Array.from(
-        document.querySelectorAll('input[name="locations"]:checked')
+        document.querySelectorAll('input[name="location"]:checked')
     ).map(input => input.value);
 
 
-    // spouštěče
     const triggers = Array.from(
-        document.querySelectorAll('input[name="triggers"]:checked')
+        document.querySelectorAll('input[name="trigger"]:checked')
     ).map(input => input.value);
 
 
-    // ostatní údaje
-    const products =
-        document.getElementById("products").value;
-
-    const note =
-        document.getElementById("note").value;
+    const products = document
+        .getElementById("products")
+        .value
+        .trim();
 
 
-    // vytvoření záznamu
+    const note = document
+        .getElementById("note")
+        .value
+        .trim();
+
+
     const entry = {
+        id: Date.now(),
 
         date: new Date().toISOString(),
 
-        eczemaIntensity: Number(eczemaIntensity),
+        severity: selectedSeverity,
 
-        itchIntensity: Number(itchIntensity),
+        itch: selectedItch,
 
         locations: locations,
 
@@ -101,45 +120,369 @@ form.addEventListener("submit", function(event) {
     };
 
 
-    // načtení předchozích záznamů
-    const existingEntries =
-        JSON.parse(localStorage.getItem("eczemaEntries")) || [];
+    const entries = getEntries();
 
+    entries.push(entry);
 
-    // přidání nového záznamu
-    existingEntries.push(entry);
-
-
-    // uložení zpět
     localStorage.setItem(
-        "eczemaEntries",
-        JSON.stringify(existingEntries)
+        STORAGE_KEY,
+        JSON.stringify(entries)
     );
 
 
-    // potvrzení
-    successMessage.classList.add("show");
+    showSuccessMessage();
+
+    resetForm();
+});
 
 
-    // reset formuláře
-    form.reset();
+/* =========================
+   NAČTENÍ DAT
+========================= */
+
+function getEntries() {
+
+    const stored = localStorage.getItem(STORAGE_KEY);
+
+    if (!stored) {
+        return [];
+    }
+
+    try {
+        return JSON.parse(stored);
+    } catch {
+        return [];
+    }
+}
 
 
-    // reset číselných škál
+/* =========================
+   HISTORIE
+========================= */
+
+function renderHistory() {
+
+    const historyList = document.getElementById("historyList");
+
+    const entryCount = document.getElementById("entryCount");
+
+    const entries = getEntries();
+
+
+    entryCount.textContent = formatEntryCount(entries.length);
+
+
+    if (entries.length === 0) {
+
+        historyList.innerHTML = `
+            <div class="empty-history">
+                <h3>Zatím tu nic není</h3>
+                <p>
+                    Udělej svůj první dnešní záznam
+                    a postupně tady začne vznikat tvoje historie.
+                </p>
+            </div>
+        `;
+
+        return;
+    }
+
+
+    entries.sort((a, b) => {
+        return new Date(b.date) - new Date(a.date);
+    });
+
+
+    historyList.innerHTML = "";
+
+
+    entries.forEach(entry => {
+
+        const card = document.createElement("div");
+
+        card.className = "history-card";
+
+
+        const date = new Date(entry.date);
+
+
+        const formattedDate = date.toLocaleDateString(
+            "cs-CZ",
+            {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            }
+        );
+
+
+        const formattedTime = date.toLocaleTimeString(
+            "cs-CZ",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+
+        const locations = entry.locations || [];
+
+        const triggers = entry.triggers || [];
+
+
+        card.innerHTML = `
+
+            <div class="history-top">
+
+                <div>
+                    <div class="history-date">
+                        ${formattedDate}
+                    </div>
+
+                    <div class="history-time">
+                        Uloženo v ${formattedTime}
+                    </div>
+                </div>
+
+                <button
+                    class="delete-button"
+                    data-id="${entry.id}"
+                >
+                    Smazat
+                </button>
+
+            </div>
+
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Intenzita kůže
+                    </div>
+
+                    <div class="stat-value">
+                        ${entry.severity}/10
+                    </div>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <div class="stat-label">
+                        Svědění
+                    </div>
+
+                    <div class="stat-value">
+                        ${entry.itch}/10
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            ${
+                locations.length > 0
+                ? `
+                    <div>
+                        <strong>Místa</strong>
+
+                        <div class="tags">
+                            ${locations.map(location =>
+                                `<span class="tag">${escapeHtml(location)}</span>`
+                            ).join("")}
+                        </div>
+                    </div>
+                `
+                : ""
+            }
+
+
+            ${
+                triggers.length > 0
+                ? `
+                    <div style="margin-top: 15px;">
+                        <strong>Možné vlivy</strong>
+
+                        <div class="tags">
+                            ${triggers.map(trigger =>
+                                `<span class="tag">${escapeHtml(trigger)}</span>`
+                            ).join("")}
+                        </div>
+                    </div>
+                `
+                : ""
+            }
+
+
+            ${
+                entry.products
+                ? `
+                    <div class="history-detail">
+
+                        <strong>Produkty</strong>
+
+                        <p>
+                            ${escapeHtml(entry.products)}
+                        </p>
+
+                    </div>
+                `
+                : ""
+            }
+
+
+            ${
+                entry.note
+                ? `
+                    <div class="history-detail">
+
+                        <strong>Poznámka</strong>
+
+                        <p>
+                            ${escapeHtml(entry.note)}
+                        </p>
+
+                    </div>
+                `
+                : ""
+            }
+
+        `;
+
+
+        const deleteButton = card.querySelector(".delete-button");
+
+
+        deleteButton.addEventListener("click", () => {
+
+            deleteEntry(entry.id);
+
+        });
+
+
+        historyList.appendChild(card);
+
+    });
+}
+
+
+/* =========================
+   SMAZÁNÍ
+========================= */
+
+function deleteEntry(id) {
+
+    const confirmed = confirm(
+        "Opravdu chceš tento záznam smazat?"
+    );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    let entries = getEntries();
+
+
+    entries = entries.filter(entry => {
+        return entry.id !== id;
+    });
+
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(entries)
+    );
+
+
+    renderHistory();
+}
+
+
+/* =========================
+   RESET FORMULÁŘE
+========================= */
+
+function resetForm() {
+
+    selectedSeverity = null;
+
+    selectedItch = null;
+
+
     document.querySelectorAll(".scale button").forEach(button => {
         button.classList.remove("selected");
     });
 
-    document.getElementById("eczemaIntensity").value = "";
-    document.getElementById("itchIntensity").value = "";
+
+    document.querySelectorAll(
+        'input[type="checkbox"]'
+    ).forEach(input => {
+        input.checked = false;
+    });
 
 
-    // schovat hlášku po chvíli
+    document.getElementById("products").value = "";
+
+    document.getElementById("note").value = "";
+}
+
+
+/* =========================
+   HLÁŠKA PO ULOŽENÍ
+========================= */
+
+function showSuccessMessage() {
+
+    const message = document.getElementById("successMessage");
+
+    message.classList.add("show");
+
+
     setTimeout(() => {
-        successMessage.classList.remove("show");
+
+        message.classList.remove("show");
+
     }, 3000);
+}
 
 
-    console.log("Uložený záznam:", entry);
+/* =========================
+   POČET ZÁZNAMŮ
+========================= */
 
-});
+function formatEntryCount(count) {
+
+    if (count === 0) {
+        return "0 záznamů";
+    }
+
+    if (count === 1) {
+        return "1 záznam";
+    }
+
+    if (count >= 2 && count <= 4) {
+        return `${count} záznamy`;
+    }
+
+    return `${count} záznamů`;
+}
+
+
+/* =========================
+   OCHRANA TEXTU
+========================= */
+
+function escapeHtml(text) {
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
