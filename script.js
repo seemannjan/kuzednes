@@ -4,49 +4,55 @@ let selectedSeverity = null;
 let selectedItch = null;
 
 
-/* =========================
-   STUPNICE 1–10
-========================= */
+// =========================
+// STUPNICE
+// =========================
 
 function setupScale(scaleId, callback) {
-    const buttons = document.querySelectorAll(`#${scaleId} button`);
+    const scale = document.getElementById(scaleId);
+
+    if (!scale) return;
+
+    const buttons = scale.querySelectorAll("button");
 
     buttons.forEach(button => {
-        button.addEventListener("click", () => {
+        button.addEventListener("click", function () {
 
             buttons.forEach(btn => {
                 btn.classList.remove("selected");
             });
 
-            button.classList.add("selected");
+            this.classList.add("selected");
 
-            callback(Number(button.dataset.value));
+            callback(Number(this.dataset.value));
         });
     });
 }
 
 
-setupScale("severityScale", value => {
+setupScale("severityScale", function(value) {
     selectedSeverity = value;
 });
 
-setupScale("itchScale", value => {
+
+setupScale("itchScale", function(value) {
     selectedItch = value;
 });
 
 
-/* =========================
-   NAVIGACE
-========================= */
+// =========================
+// NAVIGACE
+// =========================
 
 const navButtons = document.querySelectorAll(".nav-button");
 const pages = document.querySelectorAll(".page");
 
+
 navButtons.forEach(button => {
 
-    button.addEventListener("click", () => {
+    button.addEventListener("click", function() {
 
-        const pageId = button.dataset.page;
+        const pageId = this.dataset.page;
 
         navButtons.forEach(btn => {
             btn.classList.remove("active");
@@ -56,22 +62,31 @@ navButtons.forEach(button => {
             page.classList.remove("active");
         });
 
-        button.classList.add("active");
+        this.classList.add("active");
 
-        document.getElementById(pageId).classList.add("active");
+        const selectedPage = document.getElementById(pageId);
+
+        if (selectedPage) {
+            selectedPage.classList.add("active");
+        }
 
         if (pageId === "history") {
             renderHistory();
         }
+
     });
+
 });
 
 
-/* =========================
-   ULOŽENÍ ZÁZNAMU
-========================= */
+// =========================
+// ULOŽENÍ
+// =========================
 
-document.getElementById("saveButton").addEventListener("click", () => {
+const saveButton = document.getElementById("saveButton");
+
+
+saveButton.addEventListener("click", function() {
 
     if (!selectedSeverity || !selectedItch) {
         alert("Vyber prosím intenzitu ekzému a svědění.");
@@ -103,19 +118,12 @@ document.getElementById("saveButton").addEventListener("click", () => {
 
     const entry = {
         id: Date.now(),
-
         date: new Date().toISOString(),
-
         severity: selectedSeverity,
-
         itch: selectedItch,
-
         locations: locations,
-
         triggers: triggers,
-
         products: products,
-
         note: note
     };
 
@@ -133,12 +141,13 @@ document.getElementById("saveButton").addEventListener("click", () => {
     showSuccessMessage();
 
     resetForm();
+
 });
 
 
-/* =========================
-   NAČTENÍ DAT
-========================= */
+// =========================
+// NAČTENÍ ZÁZNAMŮ
+// =========================
 
 function getEntries() {
 
@@ -150,20 +159,21 @@ function getEntries() {
 
     try {
         return JSON.parse(stored);
-    } catch {
+    } catch (error) {
+        console.error("Chyba při načítání záznamů:", error);
         return [];
     }
+
 }
 
 
-/* =========================
-   HISTORIE
-========================= */
+// =========================
+// HISTORIE
+// =========================
 
 function renderHistory() {
 
     const historyList = document.getElementById("historyList");
-
     const entryCount = document.getElementById("entryCount");
 
     const entries = getEntries();
@@ -188,7 +198,7 @@ function renderHistory() {
     }
 
 
-    entries.sort((a, b) => {
+    entries.sort(function(a, b) {
         return new Date(b.date) - new Date(a.date);
     });
 
@@ -196,7 +206,7 @@ function renderHistory() {
     historyList.innerHTML = "";
 
 
-    entries.forEach(entry => {
+    entries.forEach(function(entry) {
 
         const card = document.createElement("div");
 
@@ -226,7 +236,6 @@ function renderHistory() {
 
 
         const locations = entry.locations || [];
-
         const triggers = entry.triggers || [];
 
 
@@ -257,7 +266,6 @@ function renderHistory() {
             <div class="stats">
 
                 <div class="stat">
-
                     <div class="stat-label">
                         Intenzita kůže
                     </div>
@@ -265,12 +273,10 @@ function renderHistory() {
                     <div class="stat-value">
                         ${entry.severity}/10
                     </div>
-
                 </div>
 
 
                 <div class="stat">
-
                     <div class="stat-label">
                         Svědění
                     </div>
@@ -278,78 +284,59 @@ function renderHistory() {
                     <div class="stat-value">
                         ${entry.itch}/10
                     </div>
-
                 </div>
 
             </div>
 
 
-            ${
-                locations.length > 0
-                ? `
-                    <div>
-                        <strong>Místa</strong>
+            ${locations.length > 0 ? `
+                <div>
+                    <strong>Místa</strong>
 
-                        <div class="tags">
-                            ${locations.map(location =>
-                                `<span class="tag">${escapeHtml(location)}</span>`
-                            ).join("")}
-                        </div>
+                    <div class="tags">
+                        ${locations.map(function(location) {
+                            return `<span class="tag">${escapeHtml(location)}</span>`;
+                        }).join("")}
                     </div>
-                `
-                : ""
-            }
+                </div>
+            ` : ""}
 
 
-            ${
-                triggers.length > 0
-                ? `
-                    <div style="margin-top: 15px;">
-                        <strong>Možné vlivy</strong>
+            ${triggers.length > 0 ? `
+                <div class="history-section">
 
-                        <div class="tags">
-                            ${triggers.map(trigger =>
-                                `<span class="tag">${escapeHtml(trigger)}</span>`
-                            ).join("")}
-                        </div>
+                    <strong>Možné vlivy</strong>
+
+                    <div class="tags">
+                        ${triggers.map(function(trigger) {
+                            return `<span class="tag">${escapeHtml(trigger)}</span>`;
+                        }).join("")}
                     </div>
-                `
-                : ""
-            }
+
+                </div>
+            ` : ""}
 
 
-            ${
-                entry.products
-                ? `
-                    <div class="history-detail">
+            ${entry.products ? `
+                <div class="history-detail">
 
-                        <strong>Produkty</strong>
+                    <strong>Produkty</strong>
 
-                        <p>
-                            ${escapeHtml(entry.products)}
-                        </p>
+                    <p>${escapeHtml(entry.products)}</p>
 
-                    </div>
-                `
-                : ""
-            }
+                </div>
+            ` : ""}
 
 
-            ${
-                entry.note
-                ? `
-                    <div class="history-detail">
+            ${entry.note ? `
+                <div class="history-detail">
 
-                        <strong>Poznámka</strong>
+                    <strong>Poznámka</strong>
 
-                        <p>
-                            ${escapeHtml(entry.note)}
-                        </p>
+                    <p>${escapeHtml(entry.note)}</p>
 
-                    </div>
-                `
-                : ""
-            }
+                </div>
+            ` : ""}
 
         `;
 
@@ -357,22 +344,21 @@ function renderHistory() {
         const deleteButton = card.querySelector(".delete-button");
 
 
-        deleteButton.addEventListener("click", () => {
-
+        deleteButton.addEventListener("click", function() {
             deleteEntry(entry.id);
-
         });
 
 
         historyList.appendChild(card);
 
     });
+
 }
 
 
-/* =========================
-   SMAZÁNÍ
-========================= */
+// =========================
+// SMAZÁNÍ
+// =========================
 
 function deleteEntry(id) {
 
@@ -389,7 +375,7 @@ function deleteEntry(id) {
     let entries = getEntries();
 
 
-    entries = entries.filter(entry => {
+    entries = entries.filter(function(entry) {
         return entry.id !== id;
     });
 
@@ -401,41 +387,39 @@ function deleteEntry(id) {
 
 
     renderHistory();
+
 }
 
 
-/* =========================
-   RESET FORMULÁŘE
-========================= */
+// =========================
+// RESET
+// =========================
 
 function resetForm() {
 
     selectedSeverity = null;
-
     selectedItch = null;
 
 
-    document.querySelectorAll(".scale button").forEach(button => {
+    document.querySelectorAll(".scale button").forEach(function(button) {
         button.classList.remove("selected");
     });
 
 
-    document.querySelectorAll(
-        'input[type="checkbox"]'
-    ).forEach(input => {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(input) {
         input.checked = false;
     });
 
 
     document.getElementById("products").value = "";
-
     document.getElementById("note").value = "";
+
 }
 
 
-/* =========================
-   HLÁŠKA PO ULOŽENÍ
-========================= */
+// =========================
+// ÚSPĚŠNÉ ULOŽENÍ
+// =========================
 
 function showSuccessMessage() {
 
@@ -444,17 +428,16 @@ function showSuccessMessage() {
     message.classList.add("show");
 
 
-    setTimeout(() => {
-
+    setTimeout(function() {
         message.classList.remove("show");
-
     }, 3000);
+
 }
 
 
-/* =========================
-   POČET ZÁZNAMŮ
-========================= */
+// =========================
+// POČET ZÁZNAMŮ
+// =========================
 
 function formatEntryCount(count) {
 
@@ -467,16 +450,17 @@ function formatEntryCount(count) {
     }
 
     if (count >= 2 && count <= 4) {
-        return `${count} záznamy`;
+        return count + " záznamy";
     }
 
-    return `${count} záznamů`;
+    return count + " záznamů";
+
 }
 
 
-/* =========================
-   OCHRANA TEXTU
-========================= */
+// =========================
+// OCHRANA TEXTU
+// =========================
 
 function escapeHtml(text) {
 
@@ -485,4 +469,5 @@ function escapeHtml(text) {
     div.textContent = text;
 
     return div.innerHTML;
+
 }
