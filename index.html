@@ -3,29 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Ekzém Tracker</title>
-
+    <title>Kůže dnes</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <main class="app">
+<div class="app">
 
-        <header class="header">
-            <h1>Ekzém Tracker</h1>
-            <p>Dnešní záznam</p>
-        </header>
+    <header class="header">
+        <div>
+            <h1>Kůže dnes</h1>
+            <p>Poznej svou kůži.</p>
+        </div>
+    </header>
+
+    <nav class="navigation">
+        <button class="nav-button active" data-page="new-entry">
+            Dnešní záznam
+        </button>
+
+        <button class="nav-button" data-page="history">
+            Historie
+        </button>
+    </nav>
 
 
-        <form id="eczemaForm">
+    <!-- NOVÝ ZÁZNAM -->
+    <main id="new-entry" class="page active">
 
-            <!-- INTENZITA EKZÉMU -->
-            <section class="card">
-                <h2>Jak moc tě dnes ekzém trápil?</h2>
+        <section class="card">
+            <h2>Dnešní stav kůže</h2>
+            <p class="subtitle">
+                Jak se dnes tvoje kůže cítí?
+            </p>
 
-                <div class="scale" id="eczemaScale">
+            <div class="field">
+                <label>Intenzita ekzému</label>
+
+                <div class="scale" id="severityScale">
                     <button type="button" data-value="1">1</button>
                     <button type="button" data-value="2">2</button>
                     <button type="button" data-value="3">3</button>
@@ -38,13 +54,15 @@
                     <button type="button" data-value="10">10</button>
                 </div>
 
-                <input type="hidden" id="eczemaIntensity" name="eczemaIntensity">
-            </section>
+                <div class="scale-labels">
+                    <span>Skoro nic</span>
+                    <span>Velmi silné</span>
+                </div>
+            </div>
 
 
-            <!-- SVĚDĚNÍ -->
-            <section class="card">
-                <h2>Jak moc svědil?</h2>
+            <div class="field">
+                <label>Jak moc to svědí?</label>
 
                 <div class="scale" id="itchScale">
                     <button type="button" data-value="1">1</button>
@@ -59,137 +77,130 @@
                     <button type="button" data-value="10">10</button>
                 </div>
 
-                <input type="hidden" id="itchIntensity" name="itchIntensity">
-            </section>
-
-
-            <!-- MÍSTA -->
-            <section class="card">
-                <h2>Kde se objevil?</h2>
-
-                <div class="options">
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Obličej">
-                        <span>Obličej</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Ruce">
-                        <span>Ruce</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Lokty">
-                        <span>Lokty</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Kolena">
-                        <span>Kolena</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Trup">
-                        <span>Trup</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="locations" value="Jiné">
-                        <span>Jiné</span>
-                    </label>
-
+                <div class="scale-labels">
+                    <span>Vůbec</span>
+                    <span>Nejhorší</span>
                 </div>
-            </section>
+            </div>
+        </section>
 
 
-            <!-- SPOUŠTĚČE -->
-            <section class="card">
-                <h2>Co mohlo ekzém zhoršit?</h2>
+        <section class="card">
+            <h2>Kde se ekzém objevil?</h2>
 
-                <div class="options">
+            <div class="checkbox-grid">
+                <label class="checkbox">
+                    <input type="checkbox" value="Obličej" name="location">
+                    <span>Obličej</span>
+                </label>
 
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Stres">
-                        <span>Stres</span>
-                    </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="Ruce" name="location">
+                    <span>Ruce</span>
+                </label>
 
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Špatný spánek">
-                        <span>Špatný spánek</span>
-                    </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="Lokty" name="location">
+                    <span>Lokty</span>
+                </label>
 
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Pocení">
-                        <span>Pocení</span>
-                    </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="Kolena" name="location">
+                    <span>Kolena</span>
+                </label>
 
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Sport">
-                        <span>Sport</span>
-                    </label>
+                <label class="checkbox">
+                    <input type="checkbox" value="Trup" name="location">
+                    <span>Trup</span>
+                </label>
 
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Počasí">
-                        <span>Počasí</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Nový produkt">
-                        <span>Nový produkt</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Jídlo">
-                        <span>Jídlo</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Nic zvláštního">
-                        <span>Nic zvláštního</span>
-                    </label>
-
-                    <label class="option">
-                        <input type="checkbox" name="triggers" value="Jiné">
-                        <span>Jiné</span>
-                    </label>
-
-                </div>
-            </section>
+                <label class="checkbox">
+                    <input type="checkbox" value="Jinde" name="location">
+                    <span>Jinde</span>
+                </label>
+            </div>
+        </section>
 
 
-            <!-- PRODUKTY -->
-            <section class="card">
-                <h2>Co jsi dnes použil?</h2>
+        <section class="card">
+            <h2>Co mohlo mít vliv?</h2>
+
+            <div class="checkbox-grid">
+                <label class="checkbox">
+                    <input type="checkbox" value="Stres" name="trigger">
+                    <span>Stres</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Špatný spánek" name="trigger">
+                    <span>Špatný spánek</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Pocení" name="trigger">
+                    <span>Pocení</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Sport" name="trigger">
+                    <span>Sport</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Počasí" name="trigger">
+                    <span>Počasí</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Nový produkt" name="trigger">
+                    <span>Nový produkt</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Jídlo" name="trigger">
+                    <span>Jídlo</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Nic zvláštního" name="trigger">
+                    <span>Nic zvláštního</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Jiné" name="trigger">
+                    <span>Jiné</span>
+                </label>
+            </div>
+        </section>
+
+
+        <section class="card">
+
+            <div class="field">
+                <label for="products">Použité produkty</label>
 
                 <textarea
                     id="products"
-                    name="products"
-                    placeholder="Např. CeraVe krém, kortikoid..."
-                    rows="3"
+                    placeholder="Např. Lipikar Baume AP+, kortikoidní mast..."
                 ></textarea>
-            </section>
+            </div>
 
 
-            <!-- POZNÁMKA -->
-            <section class="card">
-                <h2>Poznámka</h2>
+            <div class="field">
+                <label for="note">Poznámka</label>
 
                 <textarea
                     id="note"
-                    name="note"
-                    placeholder="Jaký byl dnešek?"
-                    rows="4"
+                    placeholder="Jak ses dnes cítil/a? Co se změnilo?"
                 ></textarea>
-            </section>
+            </div>
+
+        </section>
 
 
-            <button type="submit" class="save-button">
-                Uložit dnešní záznam
-            </button>
-
-        </form>
-
+        <button id="saveButton" class="save-button">
+            Uložit dnešní záznam
+        </button>
 
         <div id="successMessage" class="success-message">
             Záznam byl uložen ✓
@@ -197,7 +208,32 @@
 
     </main>
 
-    <script src="script.js"></script>
+
+    <!-- HISTORIE -->
+    <main id="history" class="page">
+
+        <section class="history-header">
+            <div>
+                <h2>Moje historie</h2>
+                <p class="subtitle">
+                    Tvoje předchozí záznamy
+                </p>
+            </div>
+
+            <span id="entryCount" class="entry-count">0 záznamů</span>
+        </section>
+
+
+        <div id="historyList" class="history-list">
+            <!-- Záznamy se vloží pomocí JavaScriptu -->
+        </div>
+
+    </main>
+
+</div>
+
+
+<script src="script.js"></script>
 
 </body>
 </html>
