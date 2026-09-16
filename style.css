@@ -251,15 +251,28 @@ textarea:focus {
     font-size: 12px;
 }
 
+.history-count {
+    margin-bottom: 16px;
+}
+
 
 /* ZÁZNAM */
 
-.history-card {
-    background: white;
+.history-entry {
+    background: rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
     border-radius: 18px;
-    padding: 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 10px rgba(30, 50, 35, 0.04);
+
+    padding: 18px;
+
+    margin-bottom: 12px;
+
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
 .history-top {
@@ -356,6 +369,46 @@ textarea:focus {
 }
 
 
+
+
+
+
+.history-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.history-entry-header h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.history-scores {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.history-scores > div {
+    background: #f5f8f5;
+    border-radius: 12px;
+    padding: 12px;
+    color: #333;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.history-scores strong {
+    display: block;
+    color: #7d8981;
+    font-size: 12px;
+    margin-bottom: 4px;
+}
+
 /* PRÁZDNÁ HISTORIE */
 
 .empty-history {
@@ -404,4 +457,678 @@ textarea:focus {
         padding: 8px 1px;
         font-size: 13px;
     }
+}
+
+
+/* STATISTIKY */
+
+.overview-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.overview-stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(30, 50, 35, 0.04);
+}
+
+.overview-stat-label {
+    font-size: 12px;
+    color: #7c8780;
+    line-height: 1.3;
+    min-height: 32px;
+}
+
+.overview-stat-value {
+    margin-top: 7px;
+    font-size: 27px;
+    font-weight: 700;
+    color: #31583d;
+}
+
+.overview-stat-unit {
+    font-size: 11px;
+    color: #929c96;
+    margin-top: 2px;
+}
+
+
+/* GRAF */
+
+.chart-container {
+    display: flex;
+    height: 220px;
+    margin-top: 20px;
+}
+
+.chart-y-axis {
+    width: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-bottom: 25px;
+    color: #929c96;
+    font-size: 10px;
+}
+
+.chart {
+    position: relative;
+    flex: 1;
+    height: 195px;
+    border-left: 1px solid #dfe5e0;
+    border-bottom: 1px solid #dfe5e0;
+}
+
+.chart-grid {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.chart-grid div {
+    border-top: 1px dashed #e7ebe8;
+    width: 100%;
+}
+
+
+/* BODY GRAFU */
+
+.chart-line {
+    position: absolute;
+    inset: 0;
+}
+
+.chart-point.severity {
+    background: #2f7d5b;
+}
+
+.chart-point.itch {
+    background: #b34b4b;
+}
+
+
+/* BODY GRAFU - jednotlivé body */
+
+.chart-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+
+/* ČÁRY */
+
+.chart-connection {
+    position: absolute;
+    height: 2px;
+    background: #2f7d5b;
+    transform-origin: left center;
+    pointer-events: none;
+    z-index: 2;
+}
+
+
+/* LEGENDA */
+
+.chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    font-size: 12px;
+    color: #68736c;
+}
+
+.chart-legend > div {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+}
+
+.severity-dot {
+    background: #5c8767;
+}
+
+.itch-dot {
+    background: #8c7398;
+}
+
+
+/* POPISKY GRAFU */
+
+.chart-labels {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -25px;
+    height: 20px;
+}
+
+.chart-label {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #929c96;
+}
+
+
+/* PŘEHLED SEZNAM */
+
+.overview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.overview-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.overview-row-name {
+    font-size: 14px;
+}
+
+.overview-row-count {
+    min-width: 28px;
+    text-align: center;
+    padding: 5px 8px;
+    border-radius: 8px;
+    background: #edf3ee;
+    color: #4d6754;
+    font-size: 12px;
+}
+
+.overview-empty {
+    color: #929c96;
+    font-size: 14px;
+}
+
+
+/* MOBIL */
+
+@media (max-width: 500px) {
+
+    .overview-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .overview-stats .overview-stat-card:last-child {
+        grid-column: span 2;
+    }
+
+}
+
+/* =========================
+   DATUM
+========================= */
+
+.date-card {
+    margin-bottom: 16px;
+}
+
+input[type="date"] {
+    width: 100%;
+    border: 1px solid #dbe3dd;
+    border-radius: 11px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 15px;
+    background: white;
+    color: #26332b;
+}
+
+
+/* =========================
+   POPIS STUPNICE
+========================= */
+
+.scale-description {
+    min-height: 20px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5c8767;
+}
+
+/* =========================
+   HISTORY ACTION BUTTONS
+   ========================= */
+
+.history-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.edit-button,
+.delete-button,
+#cancelEditButton {
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+}
+
+.edit-button {
+  background: #e8f5ef;
+  color: #2f7d5b;
+}
+
+.delete-button {
+  background: #f8eaea;
+  color: #b34b4b;
+}
+
+#cancelEditButton {
+  background: #eeeeee;
+  color: #555555;
+}
+
+.edit-button:hover,
+.delete-button:hover,
+#cancelEditButton:hover {
+  opacity: 0.8;
+}
+
+.edit-button:active,
+.delete-button:active,
+#cancelEditButton:active {
+  transform: scale(0.97);
+}
+
+.overview-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  background: #ffffff;
+  padding: 5px;
+  border-radius: 12px;
+  width: fit-content;
+}
+
+.overview-filter-button {
+  border: none;
+  background: transparent;
+  color: #555;
+  padding: 9px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.overview-filter-button:hover {
+  background: #f1f5f2;
+}
+
+.overview-filter-button.active {
+  background: #2f7d5b;
+  color: white;
+}
+
+@media (max-width: 600px) {
+  .overview-filter {
+    width: 100%;
+  }
+
+  .overview-filter-button {
+    flex: 1;
+    padding: 10px 8px;
+  }
+}
+
+/* =========================
+   LIQUID GLASS BOTTOM NAV
+   ========================= */
+
+.bottom-navigation {
+    position: fixed;
+    left: 50%;
+    bottom: 14px;
+    transform: translateX(-50%);
+
+    width: calc(100% - 24px);
+    max-width: 480px;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 9px 8px;
+
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.12);
+
+    z-index: 1000;
+}
+
+/* jednotlivé položky */
+
+.bottom-nav-button {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    gap: 3px;
+
+    border: none;
+    background: transparent;
+
+    color: #777;
+
+    padding: 7px 4px;
+
+    border-radius: 16px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.bottom-nav-button:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.bottom-nav-button:active {
+    transform: scale(0.94);
+}
+
+.bottom-nav-button.active {
+    color: #2f7d5b;
+}
+
+/* ikony */
+
+.bottom-nav-icon {
+    font-size: 21px;
+    line-height: 1;
+}
+
+/* prostřední tlačítko + */
+
+.bottom-nav-add {
+    position: relative;
+}
+
+.bottom-nav-add-icon {
+    display: block;
+
+    margin: 0;
+
+    color: #777;
+
+    font-size: 20px;
+    line-height: 1;
+
+    font-weight: 400;
+}
+
+.bottom-nav-add-icon:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+/* prostor pod obsahem,
+   aby ho navigace nezakrývala */
+
+.app {
+    padding-bottom: 105px;
+}
+
+/* mobil */
+
+@media (max-width: 600px) {
+
+    .bottom-navigation {
+        bottom: 10px;
+        width: calc(100% - 20px);
+        border-radius: 22px;
+    }
+
+    .bottom-nav-button {
+        font-size: 10px;
+    }
+
+    .bottom-nav-icon {
+        font-size: 20px;
+    }
+}
+
+/* =========================
+   HOME
+   ========================= */
+
+.home-hero {
+    padding: 28px 24px;
+    text-align: left;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.07);
+}
+
+.home-eyebrow {
+    margin: 0 0 8px;
+
+    color: #2f7d5b;
+
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.home-hero h2 {
+    margin: 0 0 12px;
+
+    font-size: 30px;
+    line-height: 1.15;
+}
+
+.home-hero .subtitle {
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/* =========================
+   HOME SECTION
+   ========================= */
+
+.home-section {
+    margin-top: 24px;
+}
+
+.home-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+
+    margin-bottom: 14px;
+}
+
+.home-section-header h2 {
+    margin: 0 0 4px;
+    font-size: 20px;
+}
+
+.home-section-header .subtitle {
+    margin: 0;
+}
+
+.home-link-button {
+    border: none;
+    background: transparent;
+
+    color: #2f7d5b;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    white-space: nowrap;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   RECENT ENTRIES
+   ========================= */
+
+.home-recent-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.home-entry-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 16px;
+
+    padding: 16px;
+
+    background: rgba(255, 255, 255, 0.72);
+
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    border: 1px solid rgba(255, 255, 255, 0.7);
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.home-entry-date {
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.home-entry-info {
+    display: flex;
+    gap: 12px;
+
+    color: #666;
+    font-size: 13px;
+}
+
+.home-entry-score {
+    flex-shrink: 0;
+
+    min-width: 52px;
+
+    text-align: center;
+
+    padding: 8px 6px;
+
+    border-radius: 12px;
+
+    background: #e8f5ef;
+    color: #2f7d5b;
+
+    font-weight: 700;
+}
+
+.home-empty {
+    padding: 24px;
+
+    text-align: center;
+
+    color: #777;
+
+    background: rgba(255, 255, 255, 0.55);
+
+    border-radius: 18px;
+}
+
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 600px) {
+
+    .home-hero {
+        padding: 24px 20px;
+    }
+
+    .home-hero h2 {
+        font-size: 27px;
+    }
+
+    .home-section-header {
+        align-items: center;
+    }
+
+    .home-link-button {
+        font-size: 13px;
+    }
+}
+
+/* =========================
+   PAGE HEADER
+   ========================= */
+
+.page-header {
+    padding: 8px 4px 22px;
+}
+
+.page-header h2 {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.1;
+}
+
+.page-header p {
+    margin: 6px 0 0;
+    color: #777;
+    font-size: 14px;
 }

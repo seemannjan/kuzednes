@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kůže dnes</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -11,27 +13,90 @@
 
 <div class="app">
 
-    <header class="header">
-        <div>
-            <h1>Kůže dnes</h1>
-            <p>Poznej svou kůži.</p>
+<!-- DOMŮ -->
+<main id="home" class="page active">
+
+    <section class="home-hero card">
+
+        <p class="home-eyebrow">
+            Kůže dnes
+        </p>
+
+        <h2 id="homeMainMessage">
+            Jak se dnes má tvoje kůže?
+        </h2>
+
+        <p id="homeSubMessage" class="subtitle">
+            Udělej si dnešní krátký záznam a postupně poznáš, co na tvoji kůži působí.
+        </p>
+
+    </section>
+
+
+    <section class="home-section">
+
+        <div class="home-section-header">
+
+            <div>
+                <h2>Poslední záznamy</h2>
+
+                <p class="subtitle">
+                    Tvoje poslední dny
+                </p>
+            </div>
+
+            <button
+                type="button"
+                id="homeHistoryButton"
+                class="home-link-button"
+            >
+                Zobrazit vše →
+            </button>
+
         </div>
-    </header>
 
-    <nav class="navigation">
-        <button class="nav-button active" data-page="new-entry">
-            Dnešní záznam
-        </button>
 
-        <button class="nav-button" data-page="history">
-            Historie
-        </button>
-    </nav>
+        <div
+            id="homeRecentEntries"
+            class="home-recent-entries"
+        >
+            <!-- Poslední záznamy vloží JavaScript -->
+        </div>
 
+    </section>
+
+</main>
 
     <!-- NOVÝ ZÁZNAM -->
-    <main id="new-entry" class="page active">
+    <main id="new-entry" class="page">
 
+        <div class="page-header">
+            <h2>Nový záznam</h2>
+            <p>Jak se dnes má tvoje kůže?</p>
+        </div>
+
+        <div id="editModeBar" class="edit-mode-bar">
+            <button type="button" id="cancelEditButton">
+                ← Zrušit úpravu
+            </button>
+        </div>
+
+        <section class="card date-card">
+
+            <div class="field">
+
+                <label for="entryDate">
+                    Datum záznamu
+                </label>
+
+                <input
+                    type="date"
+                    id="entryDate"
+                >
+
+            </div>
+
+        </section>
         <section class="card">
             <h2>Dnešní stav kůže</h2>
             <p class="subtitle">
@@ -55,9 +120,11 @@
                 </div>
 
                 <div class="scale-labels">
-                    <span>Skoro nic</span>
-                    <span>Velmi silné</span>
+                    <span>Skoro žádná</span>
+                    <span>Velmi silná</span>
                 </div>
+
+                <div id="severityDescription" class="scale-description"></div>
             </div>
 
 
@@ -79,8 +146,11 @@
 
                 <div class="scale-labels">
                     <span>Vůbec</span>
-                    <span>Nejhorší</span>
+                    <span>Velmi</span>
                 </div>
+
+                <div id="itchDescription" class="scale-description"></div>
+
             </div>
         </section>
 
@@ -212,23 +282,237 @@
     <!-- HISTORIE -->
     <main id="history" class="page">
 
-        <section class="history-header">
-            <div>
-                <h2>Moje historie</h2>
-                <p class="subtitle">
-                    Tvoje předchozí záznamy
-                </p>
-            </div>
+    <div class="page-header">
+        <h2>Historie</h2>
+        <p>Tvoje předchozí záznamy</p>
+    </div>
 
-            <span id="entryCount" class="entry-count">0 záznamů</span>
-        </section>
+    <div class="history-count">
+        <span id="entryCount" class="entry-count">0 záznamů</span>
+    </div>
 
-
-        <div id="historyList" class="history-list">
-            <!-- Záznamy se vloží pomocí JavaScriptu -->
-        </div>
+    <div id="historyList" class="history-list">
+        <!-- Záznamy se vloží pomocí JavaScriptu -->
+    </div>
 
     </main>
+
+    <!-- PŘEHLED -->
+<main id="overview" class="page">
+
+    <div class="page-header">
+        <h2>Přehled</h2>
+        <p>Jak se tvoje kůže vyvíjí</p>
+    </div>
+
+    <div class="overview-filter">
+        <button class="overview-filter-button active" data-period="7">
+            7 dní
+        </button>
+
+        <button class="overview-filter-button" data-period="30">
+            30 dní
+        </button>
+
+        <button class="overview-filter-button" data-period="all">
+            Vše
+        </button>
+    </div>
+
+
+    <!-- STATISTIKY -->
+
+    <section class="overview-stats">
+
+        <div class="overview-stat-card">
+
+            <div class="overview-stat-label">
+                Průměrná intenzita
+            </div>
+
+            <div id="averageSeverity" class="overview-stat-value">
+                —
+            </div>
+
+            <div class="overview-stat-unit">
+                z 10
+            </div>
+
+        </div>
+
+
+        <div class="overview-stat-card">
+
+            <div class="overview-stat-label">
+                Průměrné svědění
+            </div>
+
+            <div id="averageItch" class="overview-stat-value">
+                —
+            </div>
+
+            <div class="overview-stat-unit">
+                z 10
+            </div>
+
+        </div>
+
+
+        <div class="overview-stat-card">
+
+            <div class="overview-stat-label">
+                Zaznamenané dny
+            </div>
+
+            <div id="totalEntries" class="overview-stat-value">
+                0
+            </div>
+
+            <div class="overview-stat-unit">
+                záznamů
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- GRAF -->
+
+    <section class="card">
+
+        <h2>Vývoj posledních záznamů</h2>
+
+        <p class="subtitle">
+            Intenzita kůže a svědění
+        </p>
+
+        <div class="chart-container">
+
+            <div class="chart-y-axis">
+                <span>10</span>
+                <span>8</span>
+                <span>6</span>
+                <span>4</span>
+                <span>2</span>
+                <span>0</span>
+            </div>
+
+            <div class="chart">
+
+                <div class="chart-grid">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
+                <div id="severityLine" class="chart-line severity-line"></div>
+
+                <div id="itchLine" class="chart-line itch-line"></div>
+
+                <div id="chartLabels" class="chart-labels"></div>
+
+            </div>
+
+        </div>
+
+
+        <div class="chart-legend">
+
+            <div>
+                <span class="legend-dot severity-dot"></span>
+                Intenzita
+            </div>
+
+            <div>
+                <span class="legend-dot itch-dot"></span>
+                Svědění
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NEJČASTĚJŠÍ MÍSTA -->
+
+    <section class="card">
+
+        <h2>Nejčastější místa</h2>
+
+        <div id="locationsOverview" class="overview-list">
+        </div>
+
+    </section>
+
+
+    <!-- NEJČASTĚJŠÍ VLIVY -->
+
+    <section class="card">
+
+        <h2>Možné vlivy</h2>
+
+        <p class="subtitle">
+            Co se v záznamech objevuje nejčastěji
+        </p>
+
+        <div id="triggersOverview" class="overview-list">
+        </div>
+
+    </section>
+
+
+</main>
+
+<!-- SPODNÍ NAVIGACE -->
+<nav class="bottom-navigation">
+
+    <button
+        type="button"
+        class="bottom-nav-button active"
+        data-page="home"
+    >
+        <span class="bottom-nav-icon">⌂</span>
+        <span>Domů</span>
+    </button>
+
+
+    <button
+        type="button"
+        class="bottom-nav-button bottom-nav-add"
+        data-page="new-entry"
+        aria-label="Přidat záznam"
+    >
+        <span class="bottom-nav-add-icon">+</span>
+        <span>Záznam</span>
+    </button>
+
+
+    <button
+        type="button"
+        class="bottom-nav-button"
+        data-page="history"
+    >
+        <span class="bottom-nav-icon">▤</span>
+        <span>Historie</span>
+    </button>
+
+
+    <button
+        type="button"
+        class="bottom-nav-button"
+        data-page="overview"
+    >
+        <span class="bottom-nav-icon">◔</span>
+        <span>Přehled</span>
+    </button>
+
+</nav>
+
+
 
 </div>
 
