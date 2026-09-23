@@ -782,16 +782,27 @@ function renderOverview() {
     averageSeverity.textContent = "–";
     averageItch.textContent = "–";
 
-    document.getElementById("severityLine").innerHTML = "";
-    document.getElementById("itchLine").innerHTML = "";
-    document.getElementById("chartLabels").innerHTML = "";
+    averageSeverity.style.color = "";
+    averageItch.style.color = "";
+
+  document.getElementById("averageSeverityDescription").textContent = "—";
+
+  document.getElementById("averageItchDescription").textContent = "—";
+
+  document.getElementById("severityProgress").style.width = "0%";
+
+  document.getElementById("itchProgress").style.width = "0%";
+
+    renderChart([]);
 
     document.getElementById("locationsOverview").innerHTML =
       "<p>Zatím nejsou žádná data.</p>";
 
     document.getElementById("triggersOverview").innerHTML =
       "<p>Zatím nejsou žádná data.</p>";
-
+      
+    document.getElementById("triggerInsights").innerHTML =
+     "<p>Zatím nejsou žádná data.</p>";
     return;
   }
 
@@ -813,10 +824,66 @@ function renderOverview() {
 
 
   averageSeverity.textContent =
-    severityAverage.toFixed(1);
+  severityAverage.toFixed(1);
 
-  averageItch.textContent =
-    itchAverage.toFixed(1);
+averageItch.textContent =
+  itchAverage.toFixed(1);
+
+
+const averageSeverityDescription =
+  document.getElementById(
+    "averageSeverityDescription"
+  );
+
+const averageItchDescription =
+  document.getElementById(
+    "averageItchDescription"
+  );
+
+const severityProgress =
+  document.getElementById(
+    "severityProgress"
+  );
+
+const itchProgress =
+  document.getElementById(
+    "itchProgress"
+  );
+
+
+if (averageSeverityDescription) {
+  averageSeverityDescription.textContent =
+    getSeverityDescription(severityAverage);
+}
+
+if (averageItchDescription) {
+  averageItchDescription.textContent =
+    getItchDescription(itchAverage);
+}
+
+averageSeverity.style.color =
+  getOverviewLevelColor(severityAverage);
+
+averageItch.style.color =
+  getOverviewLevelColor(itchAverage);
+
+if (severityProgress) {
+
+  severityProgress.style.width =
+    `${severityAverage * 10}%`;
+
+  severityProgress.style.backgroundColor =
+    getOverviewLevelColor(severityAverage);
+}
+
+if (itchProgress) {
+
+  itchProgress.style.width =
+    `${itchAverage * 10}%`;
+
+  itchProgress.style.backgroundColor =
+    getOverviewLevelColor(itchAverage);
+}
 
 
   // =========================
@@ -854,29 +921,6 @@ function renderOverview() {
     triggerCounts
   );
 
-  const overviewFilterButtons = document.querySelectorAll(
-  ".overview-filter-button"
-);
-
-overviewFilterButtons.forEach((button) => {
-  button.addEventListener("click", () => {
-    overviewFilterButtons.forEach((btn) => {
-      btn.classList.remove("active");
-    });
-
-    button.classList.add("active");
-
-    const period = button.dataset.period;
-
-    overviewPeriod = period === "all"
-      ? "all"
-      : Number(period);
-
-    renderOverview();
-  });
-});
-
-
   // =========================
   // CHART
   // =========================
@@ -893,9 +937,95 @@ overviewFilterButtons.forEach((button) => {
     sortedEntries.slice(-7);
 
 
-  renderChart(lastEntries);
+  renderChart(sortedEntries);
+  renderTriggerInsights(entries);
 }
 
+const overviewFilterButtons = document.querySelectorAll(
+  ".overview-filter-button"
+);
+
+overviewFilterButtons.forEach((button) => {
+
+  button.addEventListener("click", () => {
+
+    overviewFilterButtons.forEach((btn) => {
+      btn.classList.remove("active");
+    });
+
+    button.classList.add("active");
+
+    const period = button.dataset.period;
+
+    overviewPeriod =
+      period === "all"
+        ? "all"
+        : Number(period);
+
+    renderOverview();
+  });
+
+});
+
+// =========================
+// OVERVIEW DESCRIPTIONS
+// =========================
+
+function getSeverityDescription(value) {
+
+  if (value <= 2) {
+    return "Klidná kůže";
+  }
+
+  if (value <= 4) {
+    return "Lehké potíže";
+  }
+
+  if (value <= 6) {
+    return "Střední potíže";
+  }
+
+  if (value <= 8) {
+    return "Silné potíže";
+  }
+
+  return "Velmi silné potíže";
+}
+
+
+function getItchDescription(value) {
+
+  if (value <= 2) {
+    return "Téměř nesvědí";
+  }
+
+  if (value <= 4) {
+    return "Mírné svědění";
+  }
+
+  if (value <= 6) {
+    return "Střední svědění";
+  }
+
+  if (value <= 8) {
+    return "Silné svědění";
+  }
+
+  return "Velmi silné svědění";
+}
+
+function getOverviewLevelColor(value) {
+
+  if (value <= 4) {
+    return "#2f7d5b";
+  }
+
+  if (value <= 6) {
+    return "#d6a13a";
+  }
+
+  return "#c95a5a";
+}
 
 // =========================
 // COUNT VALUES
@@ -950,157 +1080,252 @@ function renderOverviewList(elementId, values) {
 
 
 // =========================
-// CHART
+// CHART (Chart.js)
 // =========================
+
+let skinChart = null;
 
 function renderChart(entries) {
 
-  const severityLine =
-    document.getElementById("severityLine");
+  const canvas = document.getElementById("skinChart");
 
-  const itchLine =
-    document.getElementById("itchLine");
-
-  const chartLabels =
-    document.getElementById("chartLabels");
-
-  severityLine.innerHTML = "";
-  itchLine.innerHTML = "";
-  chartLabels.innerHTML = "";
-
-  if (!entries.length) {
+  if (!canvas) {
     return;
   }
 
-  entries.forEach((entry, index) => {
-
-    severityLine.innerHTML +=
-      createChartPoint(
-        entry.severity,
-        "severity",
-        index,
-        entries.length
-      );
-
-    itchLine.innerHTML +=
-      createChartPoint(
-        entry.itch,
-        "itch",
-        index,
-        entries.length
-      );
-
-    chartLabels.innerHTML += `
-      <span
-        class="chart-label"
-        style="left: ${
-          entries.length > 1
-            ? (index / (entries.length - 1)) * 100
-            : 50
-        }%"
-      >
-        ${formatDate(getRecordDate(entry))}
-      </span>
-    `;
-  });
-
-  createConnections(
-    severityLine,
-    entries.map(entry => Number(entry.severity))
+  const labels = entries.map(
+    entry => formatDate(getRecordDate(entry))
   );
 
-  createConnections(
-    itchLine,
-    entries.map(entry => Number(entry.itch))
+  const severityData = entries.map(
+    entry => Number(entry.severity)
   );
-}
+
+  const itchData = entries.map(
+    entry => Number(entry.itch)
+  );
 
 
-// =========================
-// CHART POINT
-// =========================
-
-function createChartPoint(value, type, index, total) {
-
-  const top =
-    ((10 - Number(value)) / 9) * 100;
-
-  const left =
-    total > 1
-      ? (index / (total - 1)) * 100
-      : 50;
-
-  return `
-    <div
-      class="chart-point ${type}"
-      style="
-        top: ${top}%;
-        left: ${left}%;
-      "
-      title="${value}/10"
-    ></div>
-  `;
-}
+  // Málo bodů = ukázat je zřetelně, hodně bodů = spíš plynulá čára
+  const pointRadius = entries.length > 20 ? 0 : 3;
 
 
-// =========================
-// CHART CONNECTIONS
-// =========================
-
-function createConnections(container, values) {
-
-  if (values.length < 2) {
+  if (skinChart) {
+    skinChart.data.labels = labels;
+    skinChart.data.datasets[0].data = severityData;
+    skinChart.data.datasets[1].data = itchData;
+    skinChart.data.datasets[0].pointRadius = pointRadius;
+    skinChart.data.datasets[1].pointRadius = pointRadius;
+    skinChart.update();
     return;
   }
 
-  const chartWidth = container.clientWidth;
-  const chartHeight = container.clientHeight;
+  if (typeof Chart === "undefined") {
+    return;
+  }
 
-  const pointSpacing =
-    chartWidth / (values.length - 1);
-
-  values.forEach((value, index) => {
-
-    if (index === values.length - 1) {
-      return;
+  skinChart = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    data: {
+      labels,
+      datasets: [
+        {
+          label: "Intenzita",
+          data: severityData,
+          borderColor: "#2f7d5b",
+          backgroundColor: "rgba(47, 125, 91, 0.10)",
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+          pointRadius,
+          pointHoverRadius: 5,
+          pointBackgroundColor: "#2f7d5b"
+        },
+        {
+          label: "Svědění",
+          data: itchData,
+          borderColor: "#b34b4b",
+          backgroundColor: "rgba(179, 75, 75, 0.08)",
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+          pointRadius,
+          pointHoverRadius: 5,
+          pointBackgroundColor: "#b34b4b"
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "index",
+        intersect: false
+      },
+      scales: {
+        y: {
+          min: 0,
+          max: 10,
+          ticks: {
+            stepSize: 2,
+            color: "#929c96",
+            font: { size: 10 }
+          },
+          grid: { color: "#e7ebe8" }
+        },
+        x: {
+          ticks: {
+            color: "#929c96",
+            font: { size: 10 },
+            maxRotation: 0,
+            autoSkip: true,
+            maxTicksLimit: 8
+          },
+          grid: { display: false }
+        }
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#2c332e",
+          padding: 10,
+          titleFont: { size: 11 },
+          bodyFont: { size: 11 },
+          callbacks: {
+            label: context =>
+              `${context.dataset.label}: ${context.formattedValue}/10`
+          }
+        }
+      }
     }
-
-    const nextValue = values[index + 1];
-
-    const x1 =
-      index * pointSpacing;
-
-    const x2 =
-      (index + 1) * pointSpacing;
-
-    const y1 =
-      ((10 - value) / 9) * chartHeight;
-
-    const y2 =
-      ((10 - nextValue) / 9) * chartHeight;
-
-    const dx = x2 - x1;
-    const dy = y2 - y1;
-
-    const length =
-      Math.sqrt(dx * dx + dy * dy);
-
-    const angle =
-      Math.atan2(dy, dx) * (180 / Math.PI);
-
-    const line =
-      document.createElement("div");
-
-    line.className = "chart-connection";
-
-    line.style.left = `${x1}px`;
-    line.style.top = `${y1}px`;
-    line.style.width = `${length}px`;
-    line.style.transform =
-      `rotate(${angle}deg)`;
-
-    container.appendChild(line);
   });
+}
+
+
+// =========================
+// TRIGGER INSIGHTS
+// =========================
+
+function renderTriggerInsights(entries) {
+
+  const container =
+    document.getElementById("triggerInsights");
+
+  if (!container) {
+    return;
+  }
+
+  const triggerData = {};
+
+  entries.forEach(entry => {
+
+    const triggers = entry.triggers || [];
+
+    triggers.forEach(trigger => {
+
+      if (!triggerData[trigger]) {
+        triggerData[trigger] = {
+          count: 0,
+          severityTotal: 0,
+          itchTotal: 0
+        };
+      }
+
+      triggerData[trigger].count += 1;
+
+      triggerData[trigger].severityTotal +=
+        Number(entry.severity) || 0;
+
+      triggerData[trigger].itchTotal +=
+        Number(entry.itch) || 0;
+    });
+
+  });
+
+  const insights =
+    Object.entries(triggerData)
+      .map(([trigger, data]) => {
+
+        return {
+          trigger,
+          count: data.count,
+          averageSeverity:
+            data.severityTotal / data.count,
+          averageItch:
+            data.itchTotal / data.count
+        };
+
+      })
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+
+  if (insights.length === 0) {
+
+    container.innerHTML = `
+      <div class="trigger-insights-empty">
+        Zatím nemáš dost údajů o spouštěčích.
+      </div>
+    `;
+
+    return;
+  }
+
+
+  container.innerHTML =
+    insights.map(insight => {
+
+      return `
+        <div class="trigger-insight">
+
+          <div class="trigger-insight-header">
+
+            <span class="trigger-insight-name">
+              ${escapeHtml(insight.trigger)}
+            </span>
+
+            <span class="trigger-insight-count">
+              ${insight.count}×
+            </span>
+
+          </div>
+
+
+          <div class="trigger-insight-stats">
+
+            <div class="trigger-metric">
+
+              <span class="trigger-metric-label">
+                Intenzita
+              </span>
+
+              <strong class="trigger-metric-value">
+                ${insight.averageSeverity.toFixed(1)}
+                <span>/ 10</span>
+              </strong>
+
+            </div>
+
+
+            <div class="trigger-metric">
+
+              <span class="trigger-metric-label">
+                Svědění
+              </span>
+
+              <strong class="trigger-metric-value">
+                ${insight.averageItch.toFixed(1)}
+                <span>/ 10</span>
+              </strong>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
 }
 
 
@@ -1322,6 +1547,8 @@ function renderHome() {
       `;
 
     }).join("");
+
+  renderReminder();
 }
 
 
@@ -1341,5 +1568,53 @@ if (homeHistoryButton) {
 }
 
 
+// =========================
+// PŘIPOMÍNKA DNEŠNÍHO ZÁZNAMU
+// =========================
+
+function renderReminder() {
+  const reminder =
+    document.getElementById("homeReminder");
+
+  if (!reminder) return;
+
+  const entries = getEntries();
+
+  const today = new Date();
+
+  const todayString =
+    `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+
+  const hasTodayEntry = entries.some(
+    entry => getRecordDate(entry) === todayString
+  );
+
+  reminder.classList.toggle("visible", !hasTodayEntry);
+}
+
+const homeReminderEl = document.getElementById("homeReminder");
+
+if (homeReminderEl) {
+  homeReminderEl.addEventListener("click", () => {
+    document.querySelector('[data-page="new-entry"]').click();
+  });
+}
+
+// =========================
+// PWA SERVICE WORKER
+// =========================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(registration => {
+        console.log('ServiceWorker běží (scope:', registration.scope, ')');
+      })
+      .catch(error => {
+        console.log('ServiceWorker registrace selhala:', error);
+      });
+  });
+}
+
 // První vykreslení Home
 renderHome();
+

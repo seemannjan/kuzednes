@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kůže dnes</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#f5f7f5">
     <link rel="icon" href="favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -15,6 +18,10 @@
 
 <!-- DOMŮ -->
 <main id="home" class="page active">
+
+    <div id="homeReminder" class="home-reminder">
+        <span>Dnešní záznam ještě nemáš. Nezapomeň si ho zapsat 🌿</span>
+    </div>
 
     <section class="home-hero card">
 
@@ -165,23 +172,33 @@
                 </label>
 
                 <label class="checkbox">
+                    <input type="checkbox" value="Krk" name="location">
+                    <span>Krk</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Hrudník" name="location">
+                    <span>Hrudník</span>
+                </label>
+
+                <label class="checkbox">
+                    <input type="checkbox" value="Záda" name="location">
+                    <span>Záda</span>
+                </label>
+
+                <label class="checkbox">
                     <input type="checkbox" value="Ruce" name="location">
                     <span>Ruce</span>
                 </label>
 
                 <label class="checkbox">
-                    <input type="checkbox" value="Lokty" name="location">
-                    <span>Lokty</span>
+                    <input type="checkbox" value="Nohy" name="location">
+                    <span>Nohy</span>
                 </label>
 
                 <label class="checkbox">
-                    <input type="checkbox" value="Kolena" name="location">
-                    <span>Kolena</span>
-                </label>
-
-                <label class="checkbox">
-                    <input type="checkbox" value="Trup" name="location">
-                    <span>Trup</span>
+                    <input type="checkbox" value="Břicho" name="location">
+                    <span>Břicho</span>
                 </label>
 
                 <label class="checkbox">
@@ -310,6 +327,10 @@
             7 dní
         </button>
 
+        <button type="button" class="overview-filter-button" data-period="14">
+            14 dní
+        </button>
+
         <button class="overview-filter-button" data-period="30">
             30 dní
         </button>
@@ -320,61 +341,91 @@
     </div>
 
 
-    <!-- STATISTIKY -->
+<!-- STATISTIKY -->
 
-    <section class="overview-stats">
+<section class="overview-stats">
 
-        <div class="overview-stat-card">
+    <div class="overview-stat-card">
 
-            <div class="overview-stat-label">
-                Průměrná intenzita
-            </div>
-
-            <div id="averageSeverity" class="overview-stat-value">
-                —
-            </div>
-
-            <div class="overview-stat-unit">
-                z 10
-            </div>
-
+        <div class="overview-stat-label">
+            Průměrná intenzita
         </div>
 
-
-        <div class="overview-stat-card">
-
-            <div class="overview-stat-label">
-                Průměrné svědění
-            </div>
-
-            <div id="averageItch" class="overview-stat-value">
+        <div class="overview-stat-main">
+            <span id="averageSeverity" class="overview-stat-value">
                 —
-            </div>
-
-            <div class="overview-stat-unit">
-                z 10
-            </div>
-
+            </span>
+            <span class="overview-stat-max">
+                / 10
+            </span>
         </div>
 
+        <div id="averageSeverityDescription" class="overview-stat-description">
+            —
+        </div>
 
-        <div class="overview-stat-card">
+        <div class="overview-progress">
+            <div
+                id="severityProgress"
+                class="overview-progress-bar severity-progress"
+            ></div>
+        </div>
 
-            <div class="overview-stat-label">
-                Zaznamenané dny
-            </div>
+    </div>
 
-            <div id="totalEntries" class="overview-stat-value">
+
+    <div class="overview-stat-card">
+
+        <div class="overview-stat-label">
+            Průměrné svědění
+        </div>
+
+        <div class="overview-stat-main">
+            <span id="averageItch" class="overview-stat-value">
+                —
+            </span>
+            <span class="overview-stat-max">
+                / 10
+            </span>
+        </div>
+
+        <div id="averageItchDescription" class="overview-stat-description">
+            —
+        </div>
+
+        <div class="overview-progress">
+            <div
+                id="itchProgress"
+                class="overview-progress-bar itch-progress"
+            ></div>
+        </div>
+
+    </div>
+
+
+    <div class="overview-stat-card">
+
+        <div class="overview-stat-label">
+            Zaznamenané dny
+        </div>
+
+        <div class="overview-stat-main">
+            <span id="totalEntries" class="overview-stat-value">
                 0
-            </div>
-
-            <div class="overview-stat-unit">
-                záznamů
-            </div>
-
+            </span>
         </div>
 
-    </section>
+        <div class="overview-stat-description">
+            v tomto období
+        </div>
+
+        <div class="overview-stat-small">
+            Čím více záznamů, tím přesnější přehled
+        </div>
+
+    </div>
+
+</section>
 
 
     <!-- GRAF -->
@@ -388,35 +439,7 @@
         </p>
 
         <div class="chart-container">
-
-            <div class="chart-y-axis">
-                <span>10</span>
-                <span>8</span>
-                <span>6</span>
-                <span>4</span>
-                <span>2</span>
-                <span>0</span>
-            </div>
-
-            <div class="chart">
-
-                <div class="chart-grid">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-
-                <div id="severityLine" class="chart-line severity-line"></div>
-
-                <div id="itchLine" class="chart-line itch-line"></div>
-
-                <div id="chartLabels" class="chart-labels"></div>
-
-            </div>
-
+            <canvas id="skinChart"></canvas>
         </div>
 
 
@@ -436,6 +459,21 @@
 
     </section>
 
+    <!-- SOUVISLOSTI -->
+
+    <section class="card">
+
+        <h2>Souvislosti</h2>
+
+        <p class="subtitle">
+            Co se objevuje ve dnech, kdy sleduješ svou kůži
+        </p>
+
+        <div id="triggerInsights" class="trigger-insights">
+            <!-- Dynamicky doplní JavaScript -->
+        </div>
+
+    </section>
 
     <!-- NEJČASTĚJŠÍ MÍSTA -->
 

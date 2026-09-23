@@ -500,80 +500,14 @@ textarea:focus {
 /* GRAF */
 
 .chart-container {
-    display: flex;
+    position: relative;
     height: 220px;
     margin-top: 20px;
 }
 
-.chart-y-axis {
-    width: 25px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding-bottom: 25px;
-    color: #929c96;
-    font-size: 10px;
-}
-
-.chart {
-    position: relative;
-    flex: 1;
-    height: 195px;
-    border-left: 1px solid #dfe5e0;
-    border-bottom: 1px solid #dfe5e0;
-}
-
-.chart-grid {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.chart-grid div {
-    border-top: 1px dashed #e7ebe8;
-    width: 100%;
-}
-
-
-/* BODY GRAFU */
-
-.chart-line {
-    position: absolute;
-    inset: 0;
-}
-
-.chart-point.severity {
-    background: #2f7d5b;
-}
-
-.chart-point.itch {
-    background: #b34b4b;
-}
-
-
-/* BODY GRAFU - jednotlivé body */
-
-.chart-point {
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 3;
-}
-
-
-/* ČÁRY */
-
-.chart-connection {
-    position: absolute;
-    height: 2px;
-    background: #2f7d5b;
-    transform-origin: left center;
-    pointer-events: none;
-    z-index: 2;
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
@@ -604,25 +538,7 @@ textarea:focus {
 }
 
 .itch-dot {
-    background: #8c7398;
-}
-
-
-/* POPISKY GRAFU */
-
-.chart-labels {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -25px;
-    height: 20px;
-}
-
-.chart-label {
-    position: absolute;
-    transform: translateX(-50%);
-    font-size: 10px;
-    color: #929c96;
+    background: #b34b4b;
 }
 
 
@@ -658,6 +574,85 @@ textarea:focus {
 .overview-empty {
     color: #929c96;
     font-size: 14px;
+}
+
+/* =========================
+   TRIGGER INSIGHTS
+   ========================= */
+
+.trigger-insights {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trigger-insight {
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(225, 231, 226, 0.9);
+    border-radius: 16px;
+}
+
+.trigger-insight-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.trigger-insight-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: #27332c;
+}
+
+.trigger-insight-count {
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: #edf3ee;
+    color: #4d6754;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.trigger-insight-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.trigger-metric {
+    padding: 9px 10px;
+    background: #f6f8f6;
+    border-radius: 11px;
+}
+
+.trigger-metric-label {
+    display: block;
+    margin-bottom: 4px;
+    color: #7d8981;
+    font-size: 10px;
+}
+
+.trigger-metric-value {
+    display: block;
+    color: #2f7d5b;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.trigger-metric-value span {
+    color: #929c96;
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.trigger-insights-empty {
+    padding: 18px;
+    text-align: center;
+    color: #777;
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 14px;
 }
 
 
@@ -936,6 +931,23 @@ input[type="date"] {
    HOME
    ========================= */
 
+.home-reminder {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    border-radius: 12px;
+    background: #fdf3d8;
+    border: 1px solid #efdca0;
+    color: #7a5c1e;
+    font-size: 13px;
+}
+
+.home-reminder.visible {
+    display: flex;
+}
+
 .home-hero {
     padding: 28px 24px;
     text-align: left;
@@ -1131,4 +1143,79 @@ input[type="date"] {
     margin: 6px 0 0;
     color: #777;
     font-size: 14px;
+}
+
+/* =========================
+   OVERVIEW SUMMARY
+   ========================= */
+
+.overview-stat-card {
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 18px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+}
+
+.overview-stat-label {
+    color: #7d8981;
+    font-size: 11px;
+    margin-bottom: 7px;
+}
+
+.overview-stat-main {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+}
+
+.overview-stat-value {
+    font-size: 27px;
+    line-height: 1;
+    font-weight: 700;
+    color: #2f7d5b;
+}
+
+.overview-stat-max {
+    font-size: 13px;
+    color: #929c96;
+}
+
+.overview-stat-description {
+    margin-top: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4d6754;
+}
+
+.overview-stat-small {
+    margin-top: 7px;
+    font-size: 9px;
+    line-height: 1.3;
+    color: #929c96;
+}
+
+.overview-progress {
+    width: 100%;
+    height: 5px;
+    margin-top: 12px;
+    background: #edf1ee;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.overview-progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.overview-progress-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    transition: width 0.3s ease, background-color 0.3s ease;
 }
